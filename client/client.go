@@ -33,8 +33,8 @@ func (c *client) List(ctx context.Context) (serviceMap map[string]*Service, err 
 
 	connections := make([]connection, 0)
 
-	if err := json.Unmarshal(content, &connections); err != nil {
-		return
+	if jerr := json.Unmarshal(content, &connections); jerr != nil {
+		return nil, jerr
 	}
 
 	serviceMap = make(map[string]*Service, 0)
