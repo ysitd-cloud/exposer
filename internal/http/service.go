@@ -28,7 +28,11 @@ func (s *Service) ReadyHandler() http.Handler {
 func (s *Service) createRouter() (router *vodka.Router) {
 	router = vodka.NewRouter()
 
+	router.GET("/", s.listBonds)
+	router.GET("/:hostname", s.getBond)
 	router.POST("/:hostname", s.createBond)
+	router.PUT("/:hostname", s.updateBond)
+	router.DELETE("/:hostname", s.removeBond)
 
 	return
 }
