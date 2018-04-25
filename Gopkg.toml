@@ -36,3 +36,11 @@
 [[constraint]]
   branch = "master"
   name = "code.ysitd.cloud/k8s/utils/go"
+
+[[constraint]]
+  name = "github.com/tonyhhyip/vodka"
+  version = "2.2.0"
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.0.5"

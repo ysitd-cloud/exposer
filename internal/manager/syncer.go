@@ -1,10 +1,13 @@
-package internal
+package manager
 
 import (
 	"fmt"
 	"strings"
 
 	"code.ysitd.cloud/component/exposer/internal/k8s"
+
+	"github.com/sirupsen/logrus"
+
 	"k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -17,6 +20,29 @@ func ingressName(hostname string) string {
 type Syncer struct {
 	Manager  *k8s.IngressManager `inject:""`
 	Listener chan Mutation
+	Logger   logrus.FieldLogger `inject:"syncer logger"`
+}
+
+func (s *Syncer) Run() {
+	if s.Listener == nil {
+		s.Listener = make(chan Mutation, 5)
+	}
+
+	for {
+		mutation := <-s.Listener
+		switch mutation.Action {
+		case Create:
+			s.Connect(mutation.Hostname, mutation.ServiceName, mutation.Port)
+			break
+		}
+	}
+}
+
+func (s *Syncer) GetChannel() chan<- Mutation {
+	if s.Listener == nil {
+		s.Listener = make(chan Mutation, 5)
+	}
+	return s.Listener
 }
 
 func (s *Syncer) Connect(hostname, service string, port int) error {

@@ -132,10 +132,22 @@
   version = "v2.0.1"
 
 [[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
   version = "v1.0.1"
+
+[[projects]]
+  name = "github.com/tonyhhyip/vodka"
+  packages = ["."]
+  revision = "45d6759ab410d6852657384f6f8011bcc2b79ab7"
+  version = "2.2.0"
 
 [[projects]]
   branch = "master"
@@ -330,6 +342,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cf7ecf8100752fac188c70047e06150581c1b046a8fa0dfb52f26c532d8d813b"
+  inputs-digest = "ada039f5015248c5adec30d75ee913862979eb1da0c976284177af5a75797f16"
   solver-name = "gps-cdcl"
   solver-version = 1
