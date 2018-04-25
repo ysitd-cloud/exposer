@@ -15,8 +15,10 @@ func (m *IngressManager) getIngressClient() v1beta1.IngressInterface {
 	return m.Client.ExtensionsV1beta1().Ingresses(m.Namespace)
 }
 
-func (m *IngressManager) List() (ingresses []apiv1beta1.Ingress, err error) {
-	list, err := m.getIngressClient().List(metav1.ListOptions{})
+func (m *IngressManager) List(label string) (ingresses []apiv1beta1.Ingress, err error) {
+	list, err := m.getIngressClient().List(metav1.ListOptions{
+		LabelSelector: label,
+	})
 	if err != nil {
 		return
 	}
