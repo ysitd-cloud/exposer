@@ -13,17 +13,17 @@ import (
 
 type Syncer struct {
 	Manager  *k8s.IngressManager `inject:""`
-	Listener chan Mutation
+	listener chan Mutation
 	Logger   logrus.FieldLogger `inject:"syncer logger"`
 }
 
 func (s *Syncer) Run() {
-	if s.Listener == nil {
-		s.Listener = make(chan Mutation, 5)
+	if s.listener == nil {
+		s.listener = make(chan Mutation, 5)
 	}
 
 	for {
-		mutation := <-s.Listener
+		mutation := <-s.listener
 		var err error
 		switch mutation.Action {
 		case Create:
@@ -44,10 +44,10 @@ func (s *Syncer) Run() {
 }
 
 func (s *Syncer) GetChannel() chan<- Mutation {
-	if s.Listener == nil {
-		s.Listener = make(chan Mutation, 5)
+	if s.listener == nil {
+		s.listener = make(chan Mutation, 5)
 	}
-	return s.Listener
+	return s.listener
 }
 
 func (s *Syncer) GetBonding(hostname string) (conn *Connection, err error) {

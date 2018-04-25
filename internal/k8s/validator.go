@@ -21,7 +21,7 @@ func checkPort(actual apiCoreV1.ServicePort, expected intstr.IntOrString) bool {
 var ErrNonListenPort = errors.New("connect to non-listen port")
 
 type ServiceValidator struct {
-	Manager `inject:""`
+	Manager `inject:"inline"`
 }
 
 func (v *ServiceValidator) getClient() corev1.ServiceInterface {

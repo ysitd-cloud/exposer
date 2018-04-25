@@ -7,7 +7,7 @@ import (
 )
 
 type IngressManager struct {
-	Manager   `inject:""`
+	Manager   `inject:"inline"`
 	Validator *ServiceValidator `inject:""`
 }
 
