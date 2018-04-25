@@ -2,8 +2,9 @@ package manager
 
 import (
 	"fmt"
-	"k8s.io/api/extensions/v1beta1"
 	"strings"
+
+	"k8s.io/api/extensions/v1beta1"
 )
 
 func ingressName(hostname string) string {

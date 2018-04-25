@@ -1,14 +1,19 @@
 package http
 
 import (
-	"code.ysitd.cloud/component/exposer/internal/manager"
-	"github.com/tonyhhyip/vodka"
 	"net/http"
+
+	"code.ysitd.cloud/component/exposer/internal/manager"
+
+	"github.com/gorilla/handlers"
+	"github.com/sirupsen/logrus"
+	"github.com/tonyhhyip/vodka"
 )
 
 type Service struct {
 	Server  *vodka.Server   `inject:""`
 	Syncer  *manager.Syncer `inject:""`
+	Logger  *logrus.Entry   `inject:"service logger"`
 	handler http.Handler
 }
 
@@ -20,9 +25,12 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s *Service) ReadyHandler() http.Handler {
+func (s *Service) ReadyHandler() (handler http.Handler) {
 	router := s.createRouter()
-	return s.Server.WrapHandler(router.Handler())
+	handler = s.Server.WrapHandler(router.Handler())
+	handler = handlers.CombinedLoggingHandler(s.Logger.Writer(), handler)
+	handler = handlers.RecoveryHandler(handlers.RecoveryLogger(s.Logger), handlers.PrintRecoveryStack(true))(handler)
+	return
 }
 
 func (s *Service) createRouter() (router *vodka.Router) {

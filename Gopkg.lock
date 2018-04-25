@@ -75,6 +75,12 @@
   version = "v0.1.0"
 
 [[projects]]
+  name = "github.com/gorilla/handlers"
+  packages = ["."]
+  revision = "90663712d74cb411cbef281bc1e08c19d1a76145"
+  version = "v1.3.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/gregjones/httpcache"
   packages = [
@@ -342,6 +348,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ada039f5015248c5adec30d75ee913862979eb1da0c976284177af5a75797f16"
+  inputs-digest = "19062471d48a01ff38a961431cfaf59e95a0b2746d025c66d77a6fed847ef0f8"
   solver-name = "gps-cdcl"
   solver-version = 1
