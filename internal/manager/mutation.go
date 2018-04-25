@@ -1,4 +1,4 @@
-package internal
+package manager
 
 type action string
 
