@@ -24,8 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-ignored = ["code.ysitd.cloud/component/exposer/internal*"]
-
 [prune]
   go-tests = true
   unused-packages = true
