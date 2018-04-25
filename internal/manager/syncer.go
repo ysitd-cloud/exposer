@@ -24,10 +24,21 @@ func (s *Syncer) Run() {
 
 	for {
 		mutation := <-s.Listener
+		var err error
 		switch mutation.Action {
 		case Create:
-			s.Connect(mutation.Hostname, mutation.ServiceName, mutation.Port)
+			err = s.Connect(mutation.Hostname, mutation.ServiceName, mutation.Port)
 			break
+		case Update:
+			err = s.Migrate(mutation.Hostname, mutation.ServiceName, mutation.Port)
+			break
+		case Delete:
+			err = s.Disconnect(mutation.Hostname)
+			break
+		}
+
+		if err != nil {
+			s.Logger.Errorln(err)
 		}
 	}
 }
