@@ -1,9 +1,6 @@
 package manager
 
 import (
-	"fmt"
-	"strings"
-
 	"code.ysitd.cloud/component/exposer/internal/k8s"
 
 	"github.com/sirupsen/logrus"
@@ -12,10 +9,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
-
-func ingressName(hostname string) string {
-	return fmt.Sprintf("expose-%s", strings.Replace(hostname, ".", "-", -1))
-}
 
 type Syncer struct {
 	Manager  *k8s.IngressManager `inject:""`
@@ -45,6 +38,28 @@ func (s *Syncer) GetChannel() chan<- Mutation {
 	return s.Listener
 }
 
+func (s *Syncer) GetBonding(hostname string) (conn *Connection, err error) {
+	ingress, err := s.Manager.Get(ingressName(hostname))
+	if err != nil {
+		return
+	}
+
+	conn = ingressToConnection(ingress)
+	return
+}
+
+func (s *Syncer) ListBonding() (connections []*Connection, err error) {
+	ingresses, err := s.Manager.List("creator=exposer")
+	if err != nil {
+		return
+	}
+
+	for _, ingress := range ingresses {
+		connections = append(connections, ingressToConnection(&ingress))
+	}
+	return
+}
+
 func (s *Syncer) Connect(hostname, service string, port int) error {
 	ingress := s.createIngress(hostname, service, port)
 	return s.Manager.Create(ingress)
@@ -54,6 +69,16 @@ func (s *Syncer) createIngress(hostname, service string, port int) *v1beta1.Ingr
 	return &v1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: ingressName(hostname),
+			Labels: map[string]string{
+				"creator":  "exposer",
+				"hostname": hostname,
+				"service":  service,
+			},
+			Annotations: map[string]string{
+				"code.ysitd.cloud/exposer/version":           "v1alpha1",
+				"code.ysitd.cloud/exposer/v1alpha1/hostname": hostname,
+				"code.ysitd.cloud/exposer/v1alpha1/service":  service,
+			},
 		},
 		Spec: v1beta1.IngressSpec{
 			Rules: []v1beta1.IngressRule{
