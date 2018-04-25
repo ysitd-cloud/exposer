@@ -123,8 +123,10 @@ func (s *Syncer) Migrate(hostname, service string, port int) (err error) {
 		return
 	}
 
-	ingress.Spec.Rules[0].HTTP.Paths[0].Backend.ServiceName = service
-	ingress.Spec.Rules[0].HTTP.Paths[0].Backend.ServicePort = intstr.FromInt(port)
+	backend := ingress.Spec.Rules[0].HTTP.Paths[0].Backend
+
+	backend.ServiceName = service
+	backend.ServicePort = intstr.FromInt(port)
 
 	return s.Manager.Update(ingress)
 }
