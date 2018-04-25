@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"k8s.io/api/extensions/v1beta1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -40,7 +41,9 @@ func (s *Syncer) GetChannel() chan<- Mutation {
 
 func (s *Syncer) GetBonding(hostname string) (conn *Connection, err error) {
 	ingress, err := s.Manager.Get(ingressName(hostname))
-	if err != nil {
+	if errors.IsNotFound(err) {
+		return nil, nil
+	} else if err != nil {
 		return
 	}
 
